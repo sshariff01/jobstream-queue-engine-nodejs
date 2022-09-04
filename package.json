@@ -1,0 +1,19 @@
+{
+  "name": "jobstream-demo",
+  "version": "1.0.0",
+  "description": "Attempt at building a sample job stream",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sshariff01/jobstream-demo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sshariff01/jobstream-demo/issues"
+  },
+  "homepage": "https://github.com/sshariff01/jobstream-demo#readme"
+}
