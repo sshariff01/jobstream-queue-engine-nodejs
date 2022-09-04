@@ -2,7 +2,7 @@ import express from 'express'; //Import the express dependency
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import CustomerRequestAsyncJob from './example-jobstream-workers/customer-request-async-job/CustomerRequestAsyncJob.js';
+import SampleRequestAsyncJob from './example-jobstream-workers/sample-request-async-job/sampleRequestAsyncJob.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,8 +14,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/post', async (req, res) => {
-    const customerRequestAsyncJob = await CustomerRequestAsyncJob.create();
-    const response = await customerRequestAsyncJob.enqueue({
+    const sampleRequestAsyncJob = await SampleRequestAsyncJob.create();
+    const response = await sampleRequestAsyncJob.enqueue({
         message: req.body,
     });
     res.status(202).send(response);
@@ -30,8 +30,8 @@ const workerId = `worker-001`;
 const workerPollingInterval = 5000;
 
 app.listen(workerPort, async () => {
-    const customerRequestAsyncJob = await CustomerRequestAsyncJob.create({ workerId: workerId });
+    const sampleRequestAsyncJob = await SampleRequestAsyncJob.create({ workerId: workerId });
 
-    setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, workerPollingInterval)
-    console.log(`Background CustomerRequestAsyncJob worker ${workerId} listening on port ${workerPort}, polling queue every ${workerPollingInterval} ms`);
+    setInterval(async () => { await sampleRequestAsyncJob.dequeue(); }, workerPollingInterval)
+    console.log(`Background SampleRequestAsyncJob worker ${workerId} listening on port ${workerPort}, polling queue every ${workerPollingInterval} ms`);
 });

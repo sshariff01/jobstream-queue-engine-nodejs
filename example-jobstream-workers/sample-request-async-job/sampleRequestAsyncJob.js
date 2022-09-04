@@ -2,7 +2,7 @@ import Jobstream from "../../lib/jobstream.js";
 import path from 'path';
 import url from 'url';
 
-class CustomerRequestAsyncJob extends Jobstream {
+class SampleRequestAsyncJob extends Jobstream {
     static configFilePath() {
         const __filename = url.fileURLToPath(import.meta.url);
         const currDir = path.dirname(__filename);
@@ -18,4 +18,4 @@ class CustomerRequestAsyncJob extends Jobstream {
     }
 }
 
-export default CustomerRequestAsyncJob;
+export default SampleRequestAsyncJob;
