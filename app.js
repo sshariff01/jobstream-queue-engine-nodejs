@@ -12,8 +12,6 @@ const port = 3333;                  //Save the port number where your server wil
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const customerRequestAsyncJob = new CustomerRequestAsyncJob();
-
 //Idiomatic expression in express to route and respond to a client request
 app.get('/', (req, res) => {        //get requests to the root ("/") will route here
     res.sendFile('index.html', {root: __dirname});      //server responds by sending the index.html file to the client's browser
@@ -21,11 +19,13 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 });
 
 app.get('/get', async (req, res) => {
+    const customerRequestAsyncJob = new CustomerRequestAsyncJob();
     const response = await customerRequestAsyncJob.dequeue();
     res.status(200).send(response);
 });
 
 app.post('/post', async (req, res) => {
+    const customerRequestAsyncJob = new CustomerRequestAsyncJob();
     const response = await customerRequestAsyncJob.enqueue({
         message: req.body,
     });
@@ -33,7 +33,12 @@ app.post('/post', async (req, res) => {
 });
 
 app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
-    console.log(`Now listening on port ${port}`);
+    console.log(`Main server listening on port ${port}`);
 });
 
-setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, 10000)
+app.listen(1000, () => {            //server starts listening for any attempts from a client to connect at port: {port}
+    const workerId = '001';
+    const customerRequestAsyncJob = new CustomerRequestAsyncJob({ workerId: workerId });
+    setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, 10000)
+    console.log(`Background CustomerRequestAsyncJob worker ${workerId} listening on port 1000`);
+});
