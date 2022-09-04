@@ -22,6 +22,11 @@ app.get('/get', async (req, res) => {
     res.status(200).send(response);
 });
 
+app.post('/post', async (req, res) => {
+    const response = await sqsClient.writeToQueue('Jobstream-v0');
+    res.status(202).send(response);
+});
+
 app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
     console.log(`Now listening on port ${port}`);
 });
