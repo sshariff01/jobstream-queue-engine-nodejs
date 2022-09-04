@@ -1,7 +1,7 @@
 import express from 'express'; //Import the express dependency
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import SqsClient from './lib/sqsClient.js'
+import Jobstream from './lib/jobstream.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,7 +12,7 @@ const port = 3333;                  //Save the port number where your server wil
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const sqsClient = new SqsClient({ queueName: 'Jobstream-v0' });
+const jobstream = new Jobstream({ queueName: 'Jobstream-v0' });
 
 //Idiomatic expression in express to route and respond to a client request
 app.get('/', (req, res) => {        //get requests to the root ("/") will route here
@@ -21,12 +21,12 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 });
 
 app.get('/get', async (req, res) => {
-    const response = await sqsClient.readMessageFromQueue();
+    const response = await jobstream.dequeue();
     res.status(200).send(response);
 });
 
 app.post('/post', async (req, res) => {
-    const response = await sqsClient.writeToQueue({
+    const response = await jobstream.enqueue({
         message: req.body,
     });
     res.status(202).send(response);
@@ -36,4 +36,4 @@ app.listen(port, () => {            //server starts listening for any attempts f
     console.log(`Now listening on port ${port}`);
 });
 
-setInterval(async () => { await sqsClient.readMessageFromQueue('Jobstream-v0'); }, 10000)
+setInterval(async () => { await jobstream.dequeue(); }, 10000)
