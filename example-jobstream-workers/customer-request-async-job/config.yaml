@@ -1,0 +1,3 @@
+sqs_queue_name: "<sqs queue name here>"
+aws_region: "<aws region where the queue resides>"
+aws_account_id: "<aws account id here, this must match the account id that is embedded in the sqs queue endpoint>"

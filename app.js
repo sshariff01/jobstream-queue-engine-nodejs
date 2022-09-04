@@ -2,7 +2,7 @@ import express from 'express'; //Import the express dependency
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import CustomerRequestAsyncJob from './async-workers/customer-request-async-job/CustomerRequestAsyncJob.js';
+import CustomerRequestAsyncJob from './example-jobstream-workers/customer-request-async-job/CustomerRequestAsyncJob.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,18 +12,6 @@ const port = 3333;                  //Save the port number where your server wil
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-//Idiomatic expression in express to route and respond to a client request
-app.get('/', (req, res) => {        //get requests to the root ("/") will route here
-    res.sendFile('index.html', {root: __dirname});      //server responds by sending the index.html file to the client's browser
-                                                        //the .sendFile method needs the absolute path to the file, see: https://expressjs.com/en/4x/api.html#res.sendFile
-});
-
-app.get('/get', async (req, res) => {
-    const customerRequestAsyncJob = await CustomerRequestAsyncJob.create();
-    const response = await customerRequestAsyncJob.dequeue();
-    res.status(200).send(response);
-});
 
 app.post('/post', async (req, res) => {
     const customerRequestAsyncJob = await CustomerRequestAsyncJob.create();
@@ -37,17 +25,13 @@ app.listen(port, () => {            //server starts listening for any attempts f
     console.log(`Main server listening on port ${port}`);
 });
 
-[
-    "001", "002", "003"
-].forEach((id, workerCount) => {
-    const port = 1000 + workerCount;
-    const workerId = `worker-${id}`;
-    const pollingInterval = (workerCount + 1) * 2000;
+const workerPort = 1000;
+const workerId = `worker-001`;
+const workerPollingInterval = 5000;
 
-    app.listen(port, async () => {
-        const customerRequestAsyncJob = await CustomerRequestAsyncJob.create({ workerId: workerId });
+app.listen(workerPort, async () => {
+    const customerRequestAsyncJob = await CustomerRequestAsyncJob.create({ workerId: workerId });
 
-        setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, pollingInterval)
-        console.log(`Background CustomerRequestAsyncJob worker ${workerId} listening on port ${port}, polling queue every ${pollingInterval} ms`);
-    });
+    setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, workerPollingInterval)
+    console.log(`Background CustomerRequestAsyncJob worker ${workerId} listening on port ${workerPort}, polling queue every ${workerPollingInterval} ms`);
 });
