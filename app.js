@@ -9,6 +9,9 @@ const __dirname = dirname(__filename);
 const app = express();              //Instantiate an express app, the main work horse of this server
 const port = 3333;                  //Save the port number where your server will be listening
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const sqsClient = new SqsClient();
 
 //Idiomatic expression in express to route and respond to a client request
@@ -23,7 +26,10 @@ app.get('/get', async (req, res) => {
 });
 
 app.post('/post', async (req, res) => {
-    const response = await sqsClient.writeToQueue('Jobstream-v0');
+    const response = await sqsClient.writeToQueue({
+        queueName: 'Jobstream-v0',
+        messageAttributes: req.body,
+    });
     res.status(202).send(response);
 });
 
