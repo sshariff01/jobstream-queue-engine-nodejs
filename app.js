@@ -1,7 +1,8 @@
 import express from 'express'; //Import the express dependency
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import CustomerRequestAsyncJob from './async-workers/CustomerRequestAsyncJob.js';
+
+import CustomerRequestAsyncJob from './async-workers/customer-request-async-job/CustomerRequestAsyncJob.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,13 +20,13 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 });
 
 app.get('/get', async (req, res) => {
-    const customerRequestAsyncJob = new CustomerRequestAsyncJob();
+    const customerRequestAsyncJob = await CustomerRequestAsyncJob.create();
     const response = await customerRequestAsyncJob.dequeue();
     res.status(200).send(response);
 });
 
 app.post('/post', async (req, res) => {
-    const customerRequestAsyncJob = new CustomerRequestAsyncJob();
+    const customerRequestAsyncJob = await CustomerRequestAsyncJob.create();
     const response = await customerRequestAsyncJob.enqueue({
         message: req.body,
     });
@@ -42,8 +43,10 @@ app.listen(port, () => {            //server starts listening for any attempts f
     const port = 1000 + workerCount;
     const workerId = `worker-${id}`;
     const pollingInterval = (workerCount + 1) * 2000;
-    app.listen(port, () => {
-        const customerRequestAsyncJob = new CustomerRequestAsyncJob({ workerId: workerId });
+
+    app.listen(port, async () => {
+        const customerRequestAsyncJob = await CustomerRequestAsyncJob.create({ workerId: workerId });
+
         setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, pollingInterval)
         console.log(`Background CustomerRequestAsyncJob worker ${workerId} listening on port ${port}, polling queue every ${pollingInterval} ms`);
     });
