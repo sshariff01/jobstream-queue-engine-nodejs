@@ -1,5 +1,5 @@
 {
-  "name": "jobstream-demo",
+  "name": "jobq",
   "version": "1.0.0",
   "description": "Attempt at building a sample job stream",
   "main": "index.js",
