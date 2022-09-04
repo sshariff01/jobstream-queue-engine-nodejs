@@ -1,7 +1,7 @@
 import express from 'express'; //Import the express dependency
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import Jobstream from './lib/jobstream.js'
+import CustomerRequestAsyncJob from './async-workers/CustomerRequestAsyncJob.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,7 +12,7 @@ const port = 3333;                  //Save the port number where your server wil
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const jobstream = new Jobstream({ queueName: 'Jobstream-v0' });
+const customerRequestAsyncJob = new CustomerRequestAsyncJob();
 
 //Idiomatic expression in express to route and respond to a client request
 app.get('/', (req, res) => {        //get requests to the root ("/") will route here
@@ -21,12 +21,12 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 });
 
 app.get('/get', async (req, res) => {
-    const response = await jobstream.dequeue();
+    const response = await customerRequestAsyncJob.dequeue();
     res.status(200).send(response);
 });
 
 app.post('/post', async (req, res) => {
-    const response = await jobstream.enqueue({
+    const response = await customerRequestAsyncJob.enqueue({
         message: req.body,
     });
     res.status(202).send(response);
@@ -36,4 +36,4 @@ app.listen(port, () => {            //server starts listening for any attempts f
     console.log(`Now listening on port ${port}`);
 });
 
-setInterval(async () => { await jobstream.dequeue(); }, 10000)
+setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, 10000)
