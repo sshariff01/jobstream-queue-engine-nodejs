@@ -27,7 +27,7 @@ app.get('/get', async (req, res) => {
 
 app.post('/post', async (req, res) => {
     const response = await sqsClient.writeToQueue({
-        messageAttributes: req.body,
+        message: req.body,
     });
     res.status(202).send(response);
 });
