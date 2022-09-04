@@ -25,3 +25,5 @@ app.get('/get', async (req, res) => {
 app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
     console.log(`Now listening on port ${port}`);
 });
+
+setInterval(async () => { await sqsClient.readMessageFromQueue('Jobstream-v0'); }, 10000)
