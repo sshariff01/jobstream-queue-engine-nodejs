@@ -10,6 +10,8 @@ class CustomerRequestAsyncJob extends Jobstream {
         logger.info('CustomerRequestAsyncJob processing start...')
         logger.info(JSON.stringify(message));
         logger.info('CustomerRequestAsyncJob processing end.')
+
+        return message;
     }
 }
 
