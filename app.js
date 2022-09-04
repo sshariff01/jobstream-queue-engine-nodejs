@@ -12,7 +12,7 @@ const port = 3333;                  //Save the port number where your server wil
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const sqsClient = new SqsClient();
+const sqsClient = new SqsClient({ queueName: 'Jobstream-v0' });
 
 //Idiomatic expression in express to route and respond to a client request
 app.get('/', (req, res) => {        //get requests to the root ("/") will route here
@@ -21,13 +21,12 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 });
 
 app.get('/get', async (req, res) => {
-    const response = await sqsClient.readMessageFromQueue('Jobstream-v0');
+    const response = await sqsClient.readMessageFromQueue();
     res.status(200).send(response);
 });
 
 app.post('/post', async (req, res) => {
     const response = await sqsClient.writeToQueue({
-        queueName: 'Jobstream-v0',
         messageAttributes: req.body,
     });
     res.status(202).send(response);
