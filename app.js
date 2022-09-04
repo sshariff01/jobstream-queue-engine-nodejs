@@ -36,9 +36,15 @@ app.listen(port, () => {            //server starts listening for any attempts f
     console.log(`Main server listening on port ${port}`);
 });
 
-app.listen(1000, () => {            //server starts listening for any attempts from a client to connect at port: {port}
-    const workerId = '001';
-    const customerRequestAsyncJob = new CustomerRequestAsyncJob({ workerId: workerId });
-    setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, 10000)
-    console.log(`Background CustomerRequestAsyncJob worker ${workerId} listening on port 1000`);
+[
+    "001", "002", "003"
+].forEach((id, workerCount) => {
+    const port = 1000 + workerCount;
+    const workerId = `worker-${id}`;
+    const pollingInterval = (workerCount + 1) * 2000;
+    app.listen(port, () => {
+        const customerRequestAsyncJob = new CustomerRequestAsyncJob({ workerId: workerId });
+        setInterval(async () => { await customerRequestAsyncJob.dequeue(); }, pollingInterval)
+        console.log(`Background CustomerRequestAsyncJob worker ${workerId} listening on port ${port}, polling queue every ${pollingInterval} ms`);
+    });
 });
