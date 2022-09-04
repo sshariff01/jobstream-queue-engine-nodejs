@@ -1,4 +1,3 @@
-import logger from "../../init/logger.js";
 import Jobstream from "../../lib/jobstream.js";
 import path from 'path';
 import url from 'url';
