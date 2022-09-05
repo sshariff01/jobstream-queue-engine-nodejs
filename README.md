@@ -17,7 +17,7 @@ $> npm install -s jobstream-queue-engine
 
 In NodeJS:
 
-1. Create a class for each asynchronous processing job. See the [async-workers](https://github.com/sshariff01/jobstream-nodejs-demo/tree/main/async-workers) folder of this repository for a complete example.
+1. Create a class for each asynchronous processing job. See the [async-workers](https://github.com/sshariff01/jobstream-nodejs-demo/tree/main/async-workers) folder of this repository for an example.
 
 ```js
 // Import the Jobstream class
@@ -81,6 +81,10 @@ const response = await sampleRequestAsyncJob.enqueue({
 //  supplied as the 'message' parameter in your class's 'process({ message })' method.
 const message = await sampleRequestAsyncJob.dequeue();
 ```
+
+## More Examples
+
+For a complete example end-to-end, see this [repo](https://github.com/sshariff01/jobstream-nodejs-demo).
 
 ## Future Development Plans
 
