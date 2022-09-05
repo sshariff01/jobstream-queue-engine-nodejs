@@ -28,7 +28,8 @@ import Jobstream from "jobstream-queue-engine";
 //      * sqs_queue_name
 //      * aws_region
 //      * aws_account_id
-//   2. `async process({ message })` - Processing logic that the asynchronous job is intended to carry out.
+//   2. `async process({ message })` - Processing logic that the asynchronous job is intended
+//      to carry out.
 class SampleAsyncJob extends Jobstream {
   static configFilePath() {
     /*
@@ -45,9 +46,11 @@ class SampleAsyncJob extends Jobstream {
      * Some set of steps to execute for processing the incoming message.
      *
      * --IMPORTANT--
-     *  - A truthy return value will proceed to delete the message from SQS so that it is not re-enqueued.
-     *  - A falsy return value will have SQS re-enqueue the message. AWS SQS will automatically re-enqueue
-     *     messages up to the configured maxReceiveCount of the queue, or indefinitely if not configured.
+     *  - A truthy return value will proceed to delete the message from SQS so that it is
+     *     not re-enqueued.
+     *  - A falsy return value will have SQS re-enqueue the message. AWS SQS will automatically
+     *     re-enqueue messages up to the configured maxReceiveCount of the queue, or indefinitely
+     *     if not configured.
      */
   }
 }
@@ -56,17 +59,17 @@ class SampleAsyncJob extends Jobstream {
 2. Create an instance of the class you just created using the static "create" method that is exposed by `Jobstream`
 
 ```js
-// The workerId argument is optional. When supplied, it appends the workerId to the job's logs. This is
-// particularly useful in the likely scenario that you have multiple instances of the same type of job
-// simultaenously processing messages.
+// The workerId argument is optional. When supplied, it appends the workerId to the job's logs.
+// This is particularly useful in the likely scenario that you have multiple instances of the
+// same type of job simultaenously processing messages.
 const sampleRequestAsyncJob = await SampleRequestAsyncJob.create({ workerId: workerId });
 ```
 
 3. Enqueue a message using any instance
 
 ```js
-// Note: Messages are base64 encoded in transit. Encryption can be enabled on AWS for more stringent
-//  security requirements.
+// Note: Messages are base64 encoded in transit. Encryption can be enabled on AWS for more
+//  stringent security requirements.
 const response = await sampleRequestAsyncJob.enqueue({
   message: {
     foo: 'bar',
@@ -77,8 +80,9 @@ const response = await sampleRequestAsyncJob.enqueue({
 4. Dequeue a message using any instance
 
 ```js
-// Note: The dequeue method will poll SQS for a message. If a message is received, it will then be base64 decoded
-//  supplied as the 'message' parameter in your class's 'process({ message })' method.
+// Note: The dequeue method will poll SQS for a message. If a message is received, it will then
+//  be base64 decoded and supplied as the 'message' parameter in your class's
+//  'process({ message })' method.
 const message = await sampleRequestAsyncJob.dequeue();
 ```
 
