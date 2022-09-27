@@ -28,7 +28,7 @@ import Jobstream from "jobstream-queue-engine";
 //      * sqs_queue_name
 //      * aws_region
 //      * aws_account_id
-//   2. `async process({ message })` - Processing logic that the asynchronous job is intended
+//   2. `async perform({ message })` - Processing logic that the asynchronous job is intended
 //      to carry out.
 class SampleAsyncJob extends Jobstream {
   static configFilePath() {
@@ -41,7 +41,7 @@ class SampleAsyncJob extends Jobstream {
     return '/path/to/config.yaml';
   }
 
-  async process({ message }) {
+  async perform({ message }) {
     /*
      * Some set of steps to execute for processing the incoming message.
      *
@@ -82,7 +82,7 @@ const response = await sampleRequestAsyncJob.enqueue({
 ```js
 // Note: The dequeue method will poll SQS for a message. If a message is received, it will then
 //  be base64 decoded and supplied as the 'message' parameter in your class's
-//  'process({ message })' method.
+//  'perform({ message })' method.
 const message = await sampleRequestAsyncJob.dequeue();
 ```
 

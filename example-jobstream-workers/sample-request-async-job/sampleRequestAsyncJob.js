@@ -9,7 +9,7 @@ class SampleRequestAsyncJob extends Jobstream {
         return path.resolve(currDir, './config.yaml');
     }
 
-    async process({ message }) {
+    async perform({ message }) {
         this.logger.info('CustomerRequestAsyncJob processing start...')
         this.logger.info(JSON.stringify(message));
         this.logger.info('CustomerRequestAsyncJob processing end.')
